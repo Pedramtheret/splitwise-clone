@@ -1,8 +1,9 @@
 
 class user_input:
     def __init__(self):
-        self.user=input('please enter your name:')
-        print(f"welcome {self.user}")
+        #self.user=input('please enter your name:')
+        #print(f"welcome {self.user}")
+        pass
         
 
 class MainMenu:
@@ -17,13 +18,15 @@ class MainMenu:
         5.simplify debts
         6.exit
         """
-        
+        self.balance_graph : dict={}
+        self.user_list :dict ={}
+        self.default_menu=True
 
     def main(self):
         print(self.menu)
-        self.default_menu=True
+        
         while self.default_menu:
-            self.user_choice=int(input('please choice number of an option:'))
+            self.user_choice=int(input('please choose number of an option:'))
             if self.user_choice == 1:
                 self.add_user()
                 self.default_menu=not self.default_menu       
@@ -43,14 +46,16 @@ class MainMenu:
                 print('there is no such an option,try again')
 
     def add_user(self):
-        self.user_list=[]
+        
         new_user=input('please enter name of new user:')
-        if new_user:
-            self.user_list.append(new_user)
+        if new_user not in self.user_list.keys():
+            self.user_list[new_user]=[]
             print(f"{new_user} succesfully added")
             new_user=None
+        else:
+            print('the user already exists')    
         self.return_menu()
-    
+    '''
     def add_expense(self):
         host_n , geust_n=map(int,input('please enter number of hosts and guests(comma seperated):').split())
         print(type(host_n))
@@ -62,7 +67,7 @@ class MainMenu:
         share : int=int(amount)/(int(host_n)+int(geust_n))
         share_per_host :int = int(share/host_n)
 
-        self.balance_graph : dict={}
+        
         for host in hosts:
             if host not in self.balance_graph:
                 self.balance_graph[host] =[]
@@ -76,6 +81,29 @@ class MainMenu:
         print(self.balance_graph)
 
         #self.return_menu()
+        '''
+    def add_expense(self):
+        user_name=input('enter name of the user: ')
+        if user_name not in self.user_list.keys():
+            print('add user first')
+            self.return_menu()
+        else:
+            #continue from hereee
+            amount=int(input('how much money? '))   #edit sentence
+            payer=int(input(('enter 0 if you should pay,else enter 1: ')))
+            other=input('enter name of the othe one: ') #rename
+            # I feel this part can be written very better
+            if payer == 0:
+                self.user_list[user_name].append((other,(amount/2)))
+                if other in self.user_list:
+                    self.user_list[other].append((user_name,-(amount/2)))
+            if payer==1:
+                self.user_list[user_name].append((other,-(amount/2)))
+                if other in self.user_list:
+                    self.user_list[other].append((user_name,(amount/2)))
+            print(self.user_list)
+            
+
 
     def simplify(self):
         print('simplify here')
@@ -90,20 +118,15 @@ class MainMenu:
         self.return_menu()
 
     def return_menu(self):
-        return_button=int(input('enter 1 to return to menu'))
+        return_button=int(input('enter 1 to return to menu: '))
         if return_button==1:
-            print(self.menu)
+            #print(self.menu)
             self.default_menu=not self.default_menu
+            #print(self.default_menu)
+            self.main()
         else:
             print('ey baba')  #edit this
 
 if __name__ == "__main__":
     app=MainMenu()
-    app.add_expense()
-
-
-
-
-
-
-
+    app.main()
